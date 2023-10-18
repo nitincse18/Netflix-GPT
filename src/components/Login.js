@@ -3,14 +3,14 @@ import Header from "./Header";
 import { checkValidData } from "../utils/validate";
 import {  createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from './../utils/firebase';
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {addUser, removeUser} from '../utils/userSlice'
+import {addUser} from '../utils/userSlice'
+import { BACKGROUND_IMAGE, USER_AVATAR } from "../utils/constant";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate()
+
   const dispatch = useDispatch()
 
   const email = useRef(null)
@@ -37,11 +37,10 @@ const Login = () => {
         .then(userCredential => {
             const user = userCredential.user;
             updateProfile(user, {
-                displayName: name1, photoURL: 'https://avatars.githubusercontent.com/u/38283863?v=4'
+                displayName: name1, photoURL: USER_AVATAR
             }).then(() => {
                 const {uid, email, displayName, photoURL} = auth.currentUser;
                 dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
-                navigate("/browse")
             }).catch(error => {
                 console.log(error)
                 setErrorMessage(error.message)
@@ -59,8 +58,7 @@ const Login = () => {
         signInWithEmailAndPassword(auth, email1, password1)
         .then(userCredential => {
             const user = userCredential.user;
-            console.log('user---', user)
-            navigate("/browse")
+            
         })
         .catch(error=> {
             const errorCode = error.code;
@@ -75,7 +73,7 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/893a42ad-6a39-43c2-bbc1-a951ec64ed6d/1d86e0ac-428c-4dfa-9810-5251dbf446f8/IN-en-20231002-popsignuptwoweeks-perspective_alpha_website_large.jpg"
+          src={BACKGROUND_IMAGE}
           alt="background"
         />
       </div>
